@@ -6,7 +6,8 @@
   --color-navy-200: hsl(202, 32%, 15%);
   --color-navy-100: hsl(199, 35%, 19%);
 
-  --color-silver-300: hsl(199, 27%, 18%);
+  --color-silver-400: hsl(199, 27%, 18%);
+  --color-silver-300: hsl(199, 17%, 51%);
   --color-silver-200: hsl(198, 23%, 72%);
   --color-silver-100: hsl(197, 33%, 89%);
 
@@ -40,4 +41,5 @@
   --inset-shadow-navy-lg: inset 0px -8px 0px var(--color-navy-300);
   --inset-shadow-blue-lg: inset 0px -8px 0px var(--color-blue-300);
   --inset-shadow-yellow-lg: inset 0px -8px 0px var(--color-yellow-300);
+  --inset-shadow-silver-sm: inset 0px -4px 0px var(--color-silver-300);
 }

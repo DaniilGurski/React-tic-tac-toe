@@ -41,7 +41,7 @@ function MarkButton({ mark, ...rest }: TMarkButtonProps) {
       className={clsx(
         "cursor-pointer rounded-[0.625rem] py-3",
         activeStylesCondition && "bg-silver-200",
-        !activeStylesCondition && "hover:bg-silver-300 focus:bg-silver-300",
+        !activeStylesCondition && "hover:bg-silver-400 focus:bg-silver-400",
       )}
       {...rest}
     >

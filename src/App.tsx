@@ -9,7 +9,7 @@ function App() {
 
   return (
     <>
-      <main className="bg-navy-200 text-navy-200 font-primary grid h-dvh items-center font-medium">
+      <main className="bg-navy-200 text-navy-200 font-primary grid h-dvh py-6 font-medium">
         {isPlaying ? <Game /> : <Menu />}
       </main>
     </>
