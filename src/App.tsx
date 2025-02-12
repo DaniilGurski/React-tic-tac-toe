@@ -1,11 +1,18 @@
 import Game from "@components/game/Game";
 import Menu from "@components/game/Menu";
-import { useAtom } from "jotai";
-import { isCrossSelectedAtom, isPlayingAtom } from "@/atoms";
+import { useAtom, useAtomValue } from "jotai";
+import { gameBoardAtom, isCrossSelectedAtom, isPlayingAtom } from "@/atoms";
+import { useEffect } from "react";
 
 function App() {
   const [isPlaying, setIsPlaying] = useAtom(isPlayingAtom);
   const [isCrossSelected, setIsCrossSelected] = useAtom(isCrossSelectedAtom);
+
+  // const board = useAtomValue(gameBoardAtom);
+
+  // useEffect(() => {
+  //   console.log(board);
+  // }, [board]);
 
   return (
     <>
