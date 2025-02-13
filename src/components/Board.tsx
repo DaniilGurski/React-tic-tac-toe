@@ -1,6 +1,6 @@
 import { gameBoardAtom, turnAtom } from "@/atoms";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import iconOutlineX from "@assets/icon-x-outline.svg";
 import iconOutlineO from "@assets/icon-o-outline.svg";
 import iconX from "@assets/icon-x.svg";
@@ -12,8 +12,7 @@ type TCellProps = {
 };
 
 export default function Board() {
-  const [board, setBoard] = useAtom(gameBoardAtom);
-  const boardFlatten = board.flat(1);
+  const [board] = useAtom(gameBoardAtom);
 
   return (
     <ul className="mobile:h-[480px] mb-5 grid h-[380px] grid-cols-3 grid-rows-3 gap-5">
