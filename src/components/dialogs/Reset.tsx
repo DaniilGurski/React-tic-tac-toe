@@ -1,12 +1,5 @@
-import {
-  dialogsAtom,
-  gameBoardAtom,
-  isGameEndedAtom,
-  isPlayingAtom,
-} from "@/atoms";
 import Button from "@components/Button";
 import Dialog from "@components/Dialog";
-import { useAtomValue, useSetAtom, useAtom } from "jotai";
 import { forwardRef } from "react";
 
 type TResetProps = {
@@ -15,24 +8,8 @@ type TResetProps = {
 
 const Reset = forwardRef<HTMLDialogElement, TResetProps>(
   ({ handleResetCancelButtonClick }, ref) => {
-    // TOOD: Make a useDialogHook returning close Dialog function or end Game ?
-    const [dialogs, setDialogs] = useAtom(dialogsAtom);
-    const setGameEnded = useSetAtom(isGameEndedAtom);
-    const setGameBoard = useSetAtom(gameBoardAtom);
-    const setIsPlaying = useSetAtom(isPlayingAtom);
-
-    const onResetButtonClick = () => {
-      setIsPlaying(false);
-      setGameEnded(false);
-      setGameBoard([
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-      ]);
-    };
-
     return (
-      <Dialog ref={ref} isOpened={dialogs.resetOpened}>
+      <Dialog ref={ref} isOpened={false}>
         <h2 className="text-silver-200 mb-4 text-[2.813rem] font-bold uppercase">
           RESTART GAME ?
         </h2>
@@ -47,11 +24,7 @@ const Reset = forwardRef<HTMLDialogElement, TResetProps>(
             </Button>
           </li>
           <li>
-            <Button
-              color="yellow"
-              className="rounded-xl p-4"
-              onClick={onResetButtonClick}
-            >
+            <Button color="yellow" className="rounded-xl p-4">
               YES, RESTART
             </Button>
           </li>

@@ -1,6 +1,3 @@
-import { gameBoardAtom, isGameEndedAtom, turnAtom } from "@/atoms";
-import { useAtom, useAtomValue } from "jotai";
-import { useEffect, useState } from "react";
 import iconOutlineX from "@assets/icon-x-outline.svg";
 import iconOutlineO from "@assets/icon-o-outline.svg";
 import iconX from "@assets/icon-x.svg";
@@ -13,11 +10,9 @@ type TCellProps = {
 };
 
 export default function Board() {
-  const [board] = useAtom(gameBoardAtom);
-
   return (
     <ul className="mobile:h-[480px] mb-5 grid h-[380px] grid-cols-3 grid-rows-3 gap-5">
-      {board.map((row, rowIndex) => {
+      {/* {board.map((row, rowIndex) => {
         return row.map((col, columnIndex) => {
           return (
             <Cell
@@ -28,18 +23,12 @@ export default function Board() {
             />
           );
         });
-      })}
+      })} */}
     </ul>
   );
 }
 
 function Cell({ rowIndex, columnIndex, marking }: TCellProps) {
-  const [turn, setTurn] = useAtom(turnAtom);
-  const [cellMarking, setCellMarking] = useState("");
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [board, setBoard] = useAtom(gameBoardAtom);
-  const isGameEnded = useAtomValue(isGameEndedAtom);
-
   // Add X / O to the game board
   const onCellClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rowIndex =
@@ -63,57 +52,15 @@ function Cell({ rowIndex, columnIndex, marking }: TCellProps) {
     setCellMarking(turn);
   };
 
-  useEffect(() => {
-    // Enable all buttons in the next round
-    if (!isGameEnded) {
-      setIsDisabled(false);
-    }
-  }, [isGameEnded]);
-
-  useEffect(() => {
-    if (marking) {
-      setCellMarking(marking);
-      setIsDisabled(true);
-    }
-  }, [board]);
-
   return (
     <div className="grid">
       <button
         className="bg-navy-100 inset-shadow-navy-lg group cursor-pointer place-items-center rounded-xl"
         onClick={onCellClick}
-        disabled={isDisabled}
+        disabled={false}
         data-row={rowIndex}
         data-column={columnIndex}
-      >
-        {/* Actual cell marking*/}
-        {cellMarking === "X" && isDisabled && (
-          <img src={iconX} alt="" aria-hidden="true" />
-        )}
-
-        {cellMarking === "O" && isDisabled && (
-          <img src={iconO} alt="" aria-hidden="true" />
-        )}
-
-        {/* On hover cell marking */}
-        {turn === "X" && !isDisabled && (
-          <img
-            className="hidden group-hover:block group-focus:block"
-            src={iconOutlineX}
-            alt=""
-            aria-hidden="true"
-          />
-        )}
-
-        {turn === "O" && !isDisabled && (
-          <img
-            className="hidden group-hover:block group-focus:block"
-            src={iconOutlineO}
-            alt=""
-            aria-hidden="true"
-          />
-        )}
-      </button>
+      ></button>
     </div>
   );
 }
