@@ -1,6 +1,6 @@
-import { gameBoardAtom, turnAtom } from "@/atoms";
-import { useAtom } from "jotai";
-import { useState } from "react";
+import { gameBoardAtom, isGameEndedAtom, turnAtom } from "@/atoms";
+import { useAtom, useAtomValue } from "jotai";
+import { useEffect, useState } from "react";
 import iconOutlineX from "@assets/icon-x-outline.svg";
 import iconOutlineO from "@assets/icon-o-outline.svg";
 import iconX from "@assets/icon-x.svg";
@@ -9,6 +9,7 @@ import iconO from "@assets/icon-o.svg";
 type TCellProps = {
   columnIndex: number;
   rowIndex: number;
+  marking: string;
 };
 
 export default function Board() {
@@ -17,12 +18,13 @@ export default function Board() {
   return (
     <ul className="mobile:h-[480px] mb-5 grid h-[380px] grid-cols-3 grid-rows-3 gap-5">
       {board.map((row, rowIndex) => {
-        return row.map((_col, columnIndex) => {
+        return row.map((col, columnIndex) => {
           return (
             <Cell
               rowIndex={rowIndex}
               columnIndex={columnIndex}
               key={`${rowIndex}_${columnIndex}`}
+              marking={col !== "" ? col : ""}
             />
           );
         });
@@ -31,11 +33,12 @@ export default function Board() {
   );
 }
 
-function Cell({ rowIndex, columnIndex }: TCellProps) {
+function Cell({ rowIndex, columnIndex, marking }: TCellProps) {
   const [turn, setTurn] = useAtom(turnAtom);
   const [cellMarking, setCellMarking] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
   const [board, setBoard] = useAtom(gameBoardAtom);
+  const isGameEnded = useAtomValue(isGameEndedAtom);
 
   // Add X / O to the game board
   const onCellClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -54,11 +57,25 @@ function Cell({ rowIndex, columnIndex }: TCellProps) {
       setBoard(updatedBoard);
     }
 
-    // Memorize the marking at the time of new turn (cell is clicked on)
+    // Memorize the selection on a new turn (the cell is clicked) and switch turns
     setTurn(turn === "X" ? "O" : "X");
     setIsDisabled(true);
     setCellMarking(turn);
   };
+
+  useEffect(() => {
+    // Enable all buttons in the next round
+    if (!isGameEnded) {
+      setIsDisabled(false);
+    }
+  }, [isGameEnded]);
+
+  useEffect(() => {
+    if (marking) {
+      setCellMarking(marking);
+      setIsDisabled(true);
+    }
+  }, [board]);
 
   return (
     <div className="grid">

@@ -1,5 +1,5 @@
-import { isDialogOpenedAtom, turnAtom } from "@/atoms";
-import { useAtom, useSetAtom } from "jotai";
+import { dialogsAtom, isGameEndedAtom, turnAtom } from "@/atoms";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import iconMiniX from "@assets/icon-mini-x.svg";
 import iconMiniO from "@assets/icon-mini-o.svg";
 import iconRestart from "@assets/icon-restart.svg";
@@ -7,13 +7,53 @@ import Logo from "@components/Logo";
 import Button from "@components/Button";
 import Board from "@components/Board";
 import StatBlock from "@components/StatBlock";
-import { Result } from "@components/Result";
-import { useRef } from "react";
+import Result from "@/components/dialogs/Result";
+import Reset from "@/components/dialogs/Reset";
+import { useEffect, useRef } from "react";
 
 export default function Game() {
   const [turn, setTurn] = useAtom(turnAtom);
-  const setIsDialogOpened = useSetAtom(isDialogOpenedAtom);
-  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const isGameEnded = useAtomValue(isGameEndedAtom);
+  const resetDialogRef = useRef<HTMLDialogElement | null>(null);
+  const resultDialogRef = useRef<HTMLDialogElement | null>(null);
+  const [dialogs, setDialogs] = useAtom(dialogsAtom);
+
+  const winner = turn === "X" ? "O" : "X"; // previous turn
+
+  console.log(winner);
+
+  const onResetButtonClick = () => {
+    if (!resetDialogRef.current) {
+      return;
+    }
+    setDialogs((prev) => ({ ...prev, resetOpened: true }));
+    resetDialogRef.current.showModal();
+  };
+
+  const onCancelResetButtonClick = () => {
+    if (!resetDialogRef.current) {
+      return;
+    }
+    setDialogs((prev) => ({ ...prev, resetOpened: false }));
+    resetDialogRef.current.close();
+  };
+
+  // Open result dialog
+  useEffect(() => {
+    if (!resultDialogRef.current) {
+      return;
+    }
+
+    if (isGameEnded) {
+      resultDialogRef.current.showModal();
+      setDialogs((prev) => ({ ...prev, resultOpened: true }));
+    } else {
+      setDialogs({ resultOpened: false, resetOpened: false });
+      setTurn("X");
+      resultDialogRef.current.close();
+    }
+  }, [isGameEnded]);
 
   return (
     <>
@@ -32,6 +72,7 @@ export default function Game() {
           <Button
             color="silver"
             className="mobile:p-3 aspect-square rounded-xl p-3"
+            onClick={onResetButtonClick}
           >
             <img src={iconRestart} alt="" />
           </Button>
@@ -46,24 +87,13 @@ export default function Game() {
             <StatBlock color="yellow" heading="[stat]" value={0} />
           </ul>
         </footer>
-
-        <button
-          className="text-white"
-          onClick={() => {
-            if (!dialogRef.current) {
-              return;
-            }
-            setIsDialogOpened(true);
-
-            dialogRef.current.showModal();
-          }}
-        >
-          {" "}
-          Open dialog (Test button){" "}
-        </button>
       </div>
 
-      <Result ref={dialogRef} />
+      <Result ref={resultDialogRef} winner={winner} />
+      <Reset
+        handleResetCancelButtonClick={onCancelResetButtonClick}
+        ref={resetDialogRef}
+      />
     </>
   );
 }

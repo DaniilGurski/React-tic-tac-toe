@@ -25,7 +25,7 @@ export default function Button({
   return (
     <button
       className={clsx(
-        "cursor-pointer font-bold",
+        "text-navy-200 cursor-pointer font-bold",
         className,
         colorStyles[color],
       )}
