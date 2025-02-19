@@ -5,11 +5,25 @@ import Logo from "@components/Logo";
 import Button from "@components/Button";
 import Board from "@components/Board";
 import StatBlock from "@components/StatBlock";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useGameContext } from "@/hooks/useGameContext";
+import Reset from "@/components/dialogs/Reset";
+import Result from "@/components/dialogs/Result";
+
+export type TResetDialogRef = {
+  onResetButtonClick: () => void;
+};
+
+export type TResultDialogRef = {};
 
 export default function Game() {
-  // Reset game board on first mount
+  const { state, dispatch } = useGameContext();
+
+  const resetDialogRef = useRef<TResetDialogRef | null>(null);
+  const resultDialogRef = useRef<TResultDialogRef | null>(null);
+
   useEffect(() => {}, []);
+
   return (
     <>
       <div className="max-w-game-window w-almost-full mobile:place-self-center mx-auto">
@@ -17,17 +31,17 @@ export default function Game() {
           <Logo />
 
           <div className="mobile:gap-x-3.5 bg-navy-100 mobile:px-8 mobile:py-3.5 inset-shadow-navy-sm flex items-center gap-x-2 rounded-xl px-3.5 py-2">
-            {/* <img src={turn === "X" ? iconMiniX : iconMiniO} alt="" /> */}
-            <img src={iconMiniX} alt="" />
+            <img src={state.turn === "X" ? iconMiniX : iconMiniO} alt="" />
+
             <span className="text-silver-200 mobile:text-base text-sm">
-              {" "}
-              TURN{" "}
+              TURN
             </span>
           </div>
 
           <Button
             color="silver"
             className="mobile:p-3 aspect-square rounded-xl p-3"
+            onClick={() => resetDialogRef.current?.onResetButtonClick()}
           >
             <img src={iconRestart} alt="" />
           </Button>
@@ -42,10 +56,17 @@ export default function Game() {
             <StatBlock color="yellow" heading="[stat]" value={0} />
           </ul>
         </footer>
+
+        <button
+          className="cursor-pointer text-white"
+          onClick={() => dispatch({ type: "END_GAME" })}
+        >
+          Win game
+        </button>
       </div>
 
-      {/* <Result />
-      <Reset /> */}
+      <Result ref={resultDialogRef} />
+      <Reset ref={resetDialogRef} />
     </>
   );
 }

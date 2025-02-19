@@ -9,6 +9,7 @@ import Game from "@components/game/Game";
 import Menu from "@components/game/Menu";
 import { isInMenuAtom } from "@/atoms";
 import { useAtom } from "jotai";
+import { useConsoleLog } from "@/hooks/useConsoleLog";
 
 export const GameContext = createContext<
   { state: TGameState; dispatch: (action: TAction) => void } | undefined
@@ -17,6 +18,8 @@ export const GameContext = createContext<
 function App() {
   const [state, dispatch] = useReducer(gameStateReducer, GAME_INITIAL_STATE);
   const [isInMenu, _] = useAtom(isInMenuAtom);
+
+  useConsoleLog(state);
 
   return (
     <>
