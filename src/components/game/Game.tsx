@@ -104,11 +104,8 @@ export default function Game() {
 
   useEffect(() => {
     if (!isCpuTurn) {
-      console.log("Not cpu move");
       return;
     }
-
-    console.log("CPU Making move");
 
     const getRandomCellPosition = (): {
       randomColIndex: number;
@@ -125,12 +122,9 @@ export default function Game() {
     };
 
     const { randomRowIndex, randomColIndex } = getRandomCellPosition();
-    console.log(randomRowIndex, randomColIndex);
 
     const updatedBoard = [...state.gameBoard];
     updatedBoard[randomRowIndex][randomColIndex] = state.turn;
-
-    console.log(updatedBoard);
 
     dispatch({ type: "UPDATE_GAME_BOARD", payload: updatedBoard });
   }, [isCpuTurn]);
