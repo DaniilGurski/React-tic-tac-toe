@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai";
 import { useState, useEffect, useCallback } from "react";
 import { useGameContext } from "./useGameContext";
 
-export const useCpu = () => {
+export const useComputer = () => {
   const { state, dispatch } = useGameContext();
   const [isCpuTurn, setIsCpuTurn] = useState(false);
   const gameMode = useAtomValue(gameModeAtom);

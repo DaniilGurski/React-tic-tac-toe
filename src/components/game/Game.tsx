@@ -12,7 +12,7 @@ import Result from "@/components/dialogs/Result";
 import { useAtom } from "jotai";
 import { gameModeAtom, playerOneAtom } from "@/atoms";
 import { useCheckWinner } from "@/hooks/useCheckWinner";
-import { useCpu } from "@/hooks/useCPU";
+import { useComputer } from "@/hooks/useComputer";
 
 export type TResetDialogRef = {
   onResetButtonClick: () => void;
@@ -36,7 +36,7 @@ export default function Game() {
   };
 
   useCheckWinner();
-  useCpu();
+  useComputer();
 
   return (
     <>
