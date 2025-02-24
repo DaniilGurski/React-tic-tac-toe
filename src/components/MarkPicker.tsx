@@ -41,6 +41,7 @@ function MarkButton({ mark, ...rest }: TMarkButtonProps) {
           ? "bg-silver-200"
           : "hover:bg-silver-400 focus:bg-silver-400",
       )}
+      aria-label={`select ${mark}`}
       {...rest}
     >
       {mark === "X" ? (
