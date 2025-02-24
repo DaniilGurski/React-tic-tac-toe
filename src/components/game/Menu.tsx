@@ -1,13 +1,13 @@
 import Logo from "@components/Logo";
 import MarkPicker from "@components/MarkPicker";
 import Button from "@components/Button";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { gameModeAtom, isInMenuAtom } from "@/atoms";
 import { useEffect } from "react";
 
 export default function Menu() {
   const [gameMode, setGameMode] = useAtom(gameModeAtom);
-  const [_, setIsInMenu] = useAtom(isInMenuAtom);
+  const setIsInMenu = useSetAtom(isInMenuAtom);
 
   // Start game when game mode selected
   useEffect(() => {}, [gameMode]);

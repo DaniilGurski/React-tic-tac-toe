@@ -4,8 +4,7 @@ import { forwardRef, useImperativeHandle, useRef } from "react";
 import { TResetDialogRef } from "@/components/game/Game";
 import { useGameContext } from "@/hooks/useGameContext";
 
-type TResetProps = {};
-const Reset = forwardRef<TResetDialogRef, TResetProps>(({}, ref) => {
+const Reset = forwardRef<TResetDialogRef>((_, ref) => {
   const { dispatch } = useGameContext();
 
   const localRef = useRef<HTMLDialogElement | null>(null);

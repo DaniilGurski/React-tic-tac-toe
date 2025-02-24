@@ -17,13 +17,15 @@ export default function Board() {
   return (
     <ul className="mobile:h-[480px] mb-5 grid h-[380px] grid-cols-3 grid-rows-3 gap-5">
       {state.gameBoard.map((row, rowIndex) => {
-        return row.map((_col, colIndex) => {
+        return row.map((col, colIndex) => {
+          const marking = col !== "" ? (col as "X" | "O") : null;
+
           return (
             <Cell
               rowIndex={rowIndex}
               colIndex={colIndex}
               key={`${rowIndex}_${colIndex}`}
-              marking={null}
+              marking={marking}
             />
           );
         });
@@ -35,10 +37,10 @@ export default function Board() {
 function Cell({ rowIndex, colIndex, marking }: TCellProps) {
   const { state, dispatch } = useGameContext();
 
-  const [cellMarking, setCellMarking] = useState("");
+  const [cellMarking, setCellMarking] = useState(marking);
   const [isDisabled, setIsDisabled] = useState(false);
 
-  // Add X / O to the game board
+  // Add X / O to the game board by clicking
   const onCellClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rowIndex =
       e.currentTarget.dataset.row && parseInt(e.currentTarget.dataset.row);
@@ -47,15 +49,15 @@ function Cell({ rowIndex, colIndex, marking }: TCellProps) {
       e.currentTarget.dataset.column &&
       parseInt(e.currentTarget.dataset.column);
 
-    const updatedBoard = state.gameBoard;
-
     // Add a marking  to the none visual board at the specified row and column position
     if (typeof rowIndex === "number" && typeof columnIndex === "number") {
+      const updatedBoard = [...state.gameBoard];
       updatedBoard[rowIndex][columnIndex] = state.turn;
-    }
 
-    dispatch({ type: "SWITCH_TURN" });
-    setIsDisabled(true);
+      dispatch({ type: "UPDATE_GAME_BOARD", payload: updatedBoard });
+
+      setIsDisabled(true);
+    }
   };
 
   // Mark the cell on visual game board
@@ -64,27 +66,22 @@ function Cell({ rowIndex, colIndex, marking }: TCellProps) {
       return;
     }
 
-    const previousTurn = state.turn === "X" ? "O" : "X";
-    setCellMarking(previousTurn);
-
-    console.log(`Cell ${rowIndex + 1}, ${colIndex + 1} disabled`);
+    setCellMarking(marking ?? state.turn);
   }, [isDisabled]);
 
   // Disable the cell if marking was passed manually (by CPU)
   useEffect(() => {
     if (marking) {
       setIsDisabled(true);
-      console.log(`BY CPU:`);
     }
-  }, []);
+  }, [marking, colIndex, rowIndex, state.turn]);
 
-  // Reset cell if game reset
+  // Re-enable cells on reset
   useEffect(() => {
     if (state.isFreshGame) {
       setIsDisabled(false);
-      setCellMarking("");
     }
-  }, [state]);
+  }, [state.isFreshGame]);
 
   return (
     <div className="grid">
@@ -96,12 +93,11 @@ function Cell({ rowIndex, colIndex, marking }: TCellProps) {
         data-column={colIndex}
       >
         {/* Actual cell marking */}
-        {isDisabled && (
-          <img
-            src={cellMarking === "X" ? iconX : iconO}
-            alt=""
-            aria-hidden="true"
-          />
+        {isDisabled && cellMarking === "X" && (
+          <img src={iconX} alt="" aria-hidden="true" />
+        )}
+        {isDisabled && cellMarking === "O" && (
+          <img src={iconO} alt="" aria-hidden="true" />
         )}
 
         {/* On hover cell marking */}

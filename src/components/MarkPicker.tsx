@@ -1,21 +1,17 @@
 import clsx from "clsx";
 
 import { playerOneAtom } from "@/atoms";
-import { useAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import iconMenuX from "@assets/icon-menu-x.svg";
 import iconMenuO from "@assets/icon-menu-o.svg";
 import iconSelectedMenuX from "@assets/icon-menu-x-selected.svg";
 import iconSelectedMenuO from "@assets/icon-menu-o-selected.svg";
-import { useConsoleLog } from "@/hooks/useConsoleLog";
-
 type TMarkButtonProps = React.ComponentPropsWithoutRef<"button"> & {
   mark: "X" | "O";
 };
 
 export default function MarkPicker() {
-  const [playerOne, setPlayerOne] = useAtom(playerOneAtom);
-
-  useConsoleLog(playerOne, `Player one set to ${playerOne}`);
+  const setPlayerOne = useSetAtom(playerOneAtom);
 
   return (
     <div className="text-silver-200 bg-navy-100 inset-shadow-navy-lg mobile:py-8 ring-navy-200 grid gap-y-6 rounded-2xl p-6 ring-4">
@@ -36,7 +32,7 @@ export default function MarkPicker() {
 }
 
 function MarkButton({ mark, ...rest }: TMarkButtonProps) {
-  const [playerOne, _] = useAtom(playerOneAtom);
+  const playerOne = useAtomValue(playerOneAtom);
   return (
     <button
       className={clsx(
