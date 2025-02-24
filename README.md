@@ -1,50 +1,35 @@
-# React + TypeScript + Vite
+# Tic Tac Toe in React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tic-tac-toe with multiplayer and singleplayer modes, score system and nice visuals made using React, Tailwind CSS.
 
-Currently, two official plugins are available:
+## Table of contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [My process](#my-process)
+  - [Built with](#built-with)
+  - [What I learned](#what-i-learned)
+  - [Continued development](#continued-development)
+  - [Useful resources](#useful-resources)
 
-## Expanding the ESLint configuration
+## My process
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Built with
 
-- Configure the top-level `parserOptions` property like this:
+- Semantic HTML5 markup
+- CSS custom properties
+- Flexbox
+- CSS Grid
+- Mobile-first workflow
+- [React](https://reactjs.org/) - JS library
+- [Tailwind](https://tailwindcss.com/) - For styles
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### What I learned
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+I did this project as a repetition of some React basics, but for one thing I got to try out a hook I hadn't used before: useImperativeHandle (See more in src/components/dialogs/Reset.tsx and src/components/game/Game.tsx).
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### Continued development
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+Use more custom hooks, work on optimizing my code and using best practices. In the future I might also implement some bonus features, like improving the AI and adding game board size options like 4x4 or 5x5.
+
+### Useful resources
+
+- [Cosden Solutions](https://www.youtube.com/watch?v=ndVIEMasBl8) - Explanation of how useImperativeHandle works
