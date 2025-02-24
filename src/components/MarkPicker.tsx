@@ -1,11 +1,11 @@
 import clsx from "clsx";
-import { useAtomValue, useSetAtom } from "jotai";
+
 import { playerOneAtom } from "@/atoms";
+import { useAtomValue, useSetAtom } from "jotai";
 import iconMenuX from "@assets/icon-menu-x.svg";
 import iconMenuO from "@assets/icon-menu-o.svg";
 import iconSelectedMenuX from "@assets/icon-menu-x-selected.svg";
 import iconSelectedMenuO from "@assets/icon-menu-o-selected.svg";
-
 type TMarkButtonProps = React.ComponentPropsWithoutRef<"button"> & {
   mark: "X" | "O";
 };
@@ -33,7 +33,6 @@ export default function MarkPicker() {
 
 function MarkButton({ mark, ...rest }: TMarkButtonProps) {
   const playerOne = useAtomValue(playerOneAtom);
-
   return (
     <button
       className={clsx(

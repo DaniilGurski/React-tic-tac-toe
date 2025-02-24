@@ -1,30 +1,31 @@
-import { gameBoardAtom, isGameEndedAtom, turnAtom } from "@/atoms";
-import { useAtom, useAtomValue } from "jotai";
-import { useEffect, useState } from "react";
 import iconOutlineX from "@assets/icon-x-outline.svg";
 import iconOutlineO from "@assets/icon-o-outline.svg";
 import iconX from "@assets/icon-x.svg";
 import iconO from "@assets/icon-o.svg";
+import { useGameContext } from "@/hooks/useGameContext";
+import { useEffect, useState } from "react";
 
 type TCellProps = {
-  columnIndex: number;
+  colIndex: number;
   rowIndex: number;
-  marking: string;
+  marking: "X" | "O" | null;
 };
 
 export default function Board() {
-  const [board] = useAtom(gameBoardAtom);
+  const { state } = useGameContext();
 
   return (
     <ul className="mobile:h-[480px] mb-5 grid h-[380px] grid-cols-3 grid-rows-3 gap-5">
-      {board.map((row, rowIndex) => {
-        return row.map((col, columnIndex) => {
+      {state.gameBoard.map((row, rowIndex) => {
+        return row.map((col, colIndex) => {
+          const marking = col !== "" ? (col as "X" | "O") : null;
+
           return (
             <Cell
               rowIndex={rowIndex}
-              columnIndex={columnIndex}
-              key={`${rowIndex}_${columnIndex}`}
-              marking={col !== "" ? col : ""}
+              colIndex={colIndex}
+              key={`${rowIndex}_${colIndex}`}
+              marking={marking}
             />
           );
         });
@@ -33,14 +34,13 @@ export default function Board() {
   );
 }
 
-function Cell({ rowIndex, columnIndex, marking }: TCellProps) {
-  const [turn, setTurn] = useAtom(turnAtom);
-  const [cellMarking, setCellMarking] = useState("");
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [board, setBoard] = useAtom(gameBoardAtom);
-  const isGameEnded = useAtomValue(isGameEndedAtom);
+function Cell({ rowIndex, colIndex, marking }: TCellProps) {
+  const { state, dispatch } = useGameContext();
 
-  // Add X / O to the game board
+  const [cellMarking, setCellMarking] = useState(marking);
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  // Add X / O to the game board by clicking
   const onCellClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rowIndex =
       e.currentTarget.dataset.row && parseInt(e.currentTarget.dataset.row);
@@ -49,33 +49,39 @@ function Cell({ rowIndex, columnIndex, marking }: TCellProps) {
       e.currentTarget.dataset.column &&
       parseInt(e.currentTarget.dataset.column);
 
-    const updatedBoard = [...board];
-
     // Add a marking  to the none visual board at the specified row and column position
     if (typeof rowIndex === "number" && typeof columnIndex === "number") {
-      updatedBoard[rowIndex][columnIndex] = turn;
-      setBoard(updatedBoard);
-    }
+      const updatedBoard = [...state.gameBoard];
+      updatedBoard[rowIndex][columnIndex] = state.turn;
 
-    // Memorize the selection on a new turn (the cell is clicked) and switch turns
-    setTurn(turn === "X" ? "O" : "X");
-    setIsDisabled(true);
-    setCellMarking(turn);
-  };
+      dispatch({ type: "UPDATE_GAME_BOARD", payload: updatedBoard });
 
-  useEffect(() => {
-    // Enable all buttons in the next round
-    if (!isGameEnded) {
-      setIsDisabled(false);
-    }
-  }, [isGameEnded]);
-
-  useEffect(() => {
-    if (marking) {
-      setCellMarking(marking);
       setIsDisabled(true);
     }
-  }, [board]);
+  };
+
+  // Mark the cell on visual game board
+  useEffect(() => {
+    if (!isDisabled) {
+      return;
+    }
+
+    setCellMarking(marking ?? state.turn);
+  }, [isDisabled]);
+
+  // Disable the cell if marking was passed manually (by CPU)
+  useEffect(() => {
+    if (marking) {
+      setIsDisabled(true);
+    }
+  }, [marking, colIndex, rowIndex, state.turn]);
+
+  // Re-enable cells on reset
+  useEffect(() => {
+    if (state.isFreshGame) {
+      setIsDisabled(false);
+    }
+  }, [state.isFreshGame]);
 
   return (
     <div className="grid">
@@ -84,31 +90,21 @@ function Cell({ rowIndex, columnIndex, marking }: TCellProps) {
         onClick={onCellClick}
         disabled={isDisabled}
         data-row={rowIndex}
-        data-column={columnIndex}
+        data-column={colIndex}
       >
-        {/* Actual cell marking*/}
-        {cellMarking === "X" && isDisabled && (
+        {/* Actual cell marking */}
+        {isDisabled && cellMarking === "X" && (
           <img src={iconX} alt="" aria-hidden="true" />
         )}
-
-        {cellMarking === "O" && isDisabled && (
+        {isDisabled && cellMarking === "O" && (
           <img src={iconO} alt="" aria-hidden="true" />
         )}
 
         {/* On hover cell marking */}
-        {turn === "X" && !isDisabled && (
+        {!isDisabled && (
           <img
             className="hidden group-hover:block group-focus:block"
-            src={iconOutlineX}
-            alt=""
-            aria-hidden="true"
-          />
-        )}
-
-        {turn === "O" && !isDisabled && (
-          <img
-            className="hidden group-hover:block group-focus:block"
-            src={iconOutlineO}
+            src={state.turn === "X" ? iconOutlineX : iconOutlineO}
             alt=""
             aria-hidden="true"
           />
